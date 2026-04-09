@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>COMPRINX</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.ico">
+<meta name="theme-color" content="#000000">
+
+<style>
+:root{
+  --bg:#0d0d0d;
+  --text:#fff;
+  --card:#1a1a1a;
+
+  --grad-header: linear-gradient(90deg,#000,#00eaea,#000);
+  --grad-container: linear-gradient(90deg,#ff067b,#ff7416,#ff067b);
+  --grad-footer: linear-gradient(90deg,#000,#00eaea,#000);
+
+  --accent:#ff0080;
+  --accent2:#ff8c00;
+
+  --grad-header-dark: linear-gradient(90deg,#000,#003344,#000);
+  --grad-container-dark: linear-gradient(90deg,#c29d0c,#0a0a0a,#c29d0c);
+  --grad-footer-dark: linear-gradient(90deg,#000,#003344,#000);
+
+  --accent-dark:#aa0060;
+  --accent2-dark:#aa5500;
+}
+
+body.light{
+  --bg:#f2f2f2;
+  --text:#000;
+  --card:#fff;
+}
+
+body:not(.light){
+  --grad-header: var(--grad-header-dark);
+  --grad-container: var(--grad-container-dark);
+  --grad-footer: var(--grad-footer-dark);
+  --accent: var(--accent-dark);
+  --accent2: var(--accent2-dark);
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html, body{
+  max-width:100vw;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
+
+body{
+  margin:0;
+  font-family: Oxanium, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* HEADER */
+header{
+  background:var(--grad-header);
+  padding:40px 0 30px;
+  text-align:center;
+}
+.logo-header img{height:140px}
+
+/* CONTENEDOR */
+.container{
+  padding:20px;
+  background:var(--grad-container);
+}
+
+/* CARDS */
+.card{
+  background:var(--card);
+  border:2px solid var(--accent2);
+  padding:15px;
+  border-radius:15px;
+  margin:10px auto;
+  max-width:380px;
+}
+
+/* BOTONES */
+button{
+  background:var(--accent);
+  color:#fff;
+  border:2px solid var(--accent2);
+  border-radius:10px;
+  padding:8px;
+  cursor:pointer;
+}
+
+/* INPUTS */
+input,select{
+  width:100%;
+  border:2px solid var(--accent);
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:8px;
+}
+
+/* LISTA */
+ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+
+li{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:6px;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+}
+
+.actions button{
+  width:35px;
+  height:35px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.done{
+  text-decoration:line-through;
+  opacity:.5;
+}
+
+/* ICONOS */
+#modo{
+  position:fixed;
+  top:5px;
+  right:20px;
+  font-size:32px;
+  z-index:10;
+}
+
+#history-buttons{
+  position:fixed;
+  top:15px;
+  left:20px;
+  display:flex;
+  gap:5px;
+  z-index:10;
+}
+
+#history-buttons div{
+  background:var(--card);
+  border:1px solid var(--accent2);
+  border-radius:8px;
+  padding:4px 6px;
+}
+
+/* FOOTER */
+footer{
+  background:var(--grad-footer);
+  padding:20px;
+  text-align:center;
+}
+
+/* BOTONES INFERIORES SIEMPRE EN FILA */
+#acciones{
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:nowrap;
+}
+
+#acciones button{
+  width:120px;
+  height:40px;
+  flex-shrink:0;
+}
+
+/* Ajuste extra para pantallas muy pequeñas */
+@media (max-width:360px){
+  #acciones{
+    gap:6px;
+  }
+  #acciones button{
+    width:100px;
+    font-size:12px;
+    padding:6px;
+  }
+}
+
+/* Ajuste del título en móvil */
+@media (max-width: 430px) {
+  header h1 {
+    font-size: 22px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="history-buttons">
+  <div id="undo">↩️</div>
+  <div id="redo">↪️</div>
+</div>
+
+<div id="modo">🌙</div>
+
+<header>
+  <div class="logo-header">
+    <img src="logo.png" alt="COMPRINX">
+    <h1>🛒 LISTA DE LA COMPRA</h1>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h3>Añadir producto</h3>
+    <input type="text" id="input" placeholder="Producto">
+    <select id="categoria">
+      <option>Frutas</option><option>Verduras</option><option>Carnes</option>
+      <option>Pescados</option><option>Lácteos</option><option>Panadería</option>
+      <option>Cereales</option><option>Snacks</option><option>Bebidas</option>
+      <option>Postres</option><option>Congelados</option><option>Conservas</option>
+      <option>Despensa</option><option>Limpieza</option><option>Higiene</option>
+      <option>Mascotas</option><option>Bebé</option><option>Salud</option><option>Otros</option>
+    </select>
+    <button onclick="addItem()">Añadir</button>
+  </div>
+
+  <div id="listas"></div>
+
+  <div id="acciones">
+    <button onclick="markAll()">✅ Marcar todo</button>
+    <button onclick="unmarkAll()">❎ Desmarcar todo</button>
+    <button onclick="clearAll()">🆑 Borrar todo</button>
+  </div>
+
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem('listaUltraV2')) || [];
+let undoStack = [];
+let redoStack = [];
+
+const catOrder = ["Frutas","Carnes","Verduras","Pescados","Lácteos","Panadería","Cereales","Snacks","Bebidas","Postres","Congelados","Conservas","Despensa","Limpieza","Higiene","Mascotas","Bebé","Salud","Otros"];
+
+function save(){
+  localStorage.setItem('listaUltraV2', JSON.stringify(data));
+}
+
+function pushUndo(){
+  undoStack.push(JSON.parse(JSON.stringify(data)));
+  if(undoStack.length>50) undoStack.shift();
+  redoStack=[];
+}
+
+function render(){
+  const cont = document.getElementById('listas');
+  cont.innerHTML = '';
+
+  const categorias = {};
+  data.forEach(item=>{
+    if(!categorias[item.cat]) categorias[item.cat]=[];
+    categorias[item.cat].push(item);
+  });
+
+  catOrder.forEach(cat=>{
+    if(!categorias[cat]) return;
+
+    const div = document.createElement('div');
+    div.className = 'card';
+
+    const h = document.createElement('h3');
+    h.textContent = cat;
+    div.appendChild(h);
+
+    const ul = document.createElement('ul');
+
+    categorias[cat].forEach(item=>{
+      const li = document.createElement('li');
+
+      const span = document.createElement('span');
+      span.textContent = item.text;
+      if(item.done) span.classList.add('done');
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+
+      const btnDone = document.createElement('button');
+      btnDone.textContent = '✔';
+      btnDone.onclick = ()=>{
+        pushUndo();
+        item.done = !item.done;
+        save();
+        render();
+      };
+
+      const del = document.createElement('button');
+      del.textContent = 'X';
+      del.onclick = ()=>{
+        pushUndo();
+        data = data.filter(x=>x!==item);
+        save();
+        render();
+      };
+
+      actions.appendChild(btnDone);
+      actions.appendChild(del);
+
+      li.appendChild(span);
+      li.appendChild(actions);
+      ul.appendChild(li);
+    });
+
+    div.appendChild(ul);
+    cont.appendChild(div);
+  });
+}
+
+function addItem(){
+  const input = document.getElementById('input');
+  const cat = document.getElementById('categoria').value;
+
+  if(input.value.trim()==='') return;
+
+  pushUndo();
+  data.push({text:input.value,cat:cat,done:false});
+  input.value='';
+  save();
+  render();
+}
+
+function markAll(){
+  pushUndo();
+  data.forEach(i=>i.done=true);
+  save();
+  render();
+}
+
+function unmarkAll(){
+  pushUndo();
+  data.forEach(i=>i.done=false);
+  save();
+  render();
+}
+
+function clearAll(){
+  if(confirm('¿Seguro?')){
+    pushUndo();
+    data=[];
+    localStorage.removeItem('listaUltraV2');
+    render();
+  }
+}
+
+document.getElementById('undo').onclick=()=>{
+  if(undoStack.length){
+    redoStack.push(JSON.parse(JSON.stringify(data)));
+    data = undoStack.pop();
+    save();
+    render();
+  }
+};
+
+document.getElementById('redo').onclick=()=>{
+  if(redoStack.length){
+    undoStack.push(JSON.parse(JSON.stringify(data)));
+    data = redoStack.pop();
+    save();
+    render();
+  }
+};
+
+/* MODO CLARO/OSCURO */
+const modo = document.getElementById('modo');
+modo.onclick=()=>{
+  document.body.classList.toggle('light');
+  const light = document.body.classList.contains('light');
+  localStorage.setItem('modo', light);
+  modo.textContent = light ? '☀️' : '🌙';
+};
+
+window.onload=()=>{
+  if(localStorage.getItem('modo')==='true'){
+    document.body.classList.add('light');
+    modo.textContent='☀️';
+  }
+  render();
+};
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('service-worker.js');
+  });
+}
+</script>
+
+<footer>
+  <img src="logo.png" height="90" alt="COMPRINX">
+  <p>©️ COMPRINX</p>
+</footer>
+
+</body>
+</html>
